@@ -1,0 +1,11 @@
+{
+  "exclude": ["node_modules", "example", "dist", "vite.config.ts"],
+  "compilerOptions": {
+    "target": "es2016",
+    "lib": ["es6", "dom"],
+    "outDir": "./dist",
+    "module": "commonjs",
+    "strict": true,
+    "skipLibCheck": true
+  }
+}

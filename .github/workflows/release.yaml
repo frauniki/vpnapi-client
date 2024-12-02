@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Version parser
+        id: version_parser
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+
+          VERSION=${GITHUB_REF#refs/tags/}
+
+          echo ::set-output name=VERSION::$VERSION
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "14"
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version
+        run: npm version ${{ steps.version_parser.outputs.VERSION }} --no-git-tag-version
+
+      - name: Commit updates
+        uses: EndBug/add-and-commit@v9
+        with:
+          new_branch: main
+          message: "[release] Bump up ${{ steps.version_parser.outputs.VERSION }}"
+          add: package.json
+          tag: "${{ steps.version_parser.outputs.VERSION }} --force"
+          tag_push: "--force"
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish
+        run: npm run publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

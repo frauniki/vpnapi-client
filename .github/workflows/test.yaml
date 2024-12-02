@@ -1,0 +1,35 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: cache vitest
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.vite/vitest
+          key: vitest-v1-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            vitest-v1-
+
+      - name: Run tests
+        run: TEST_API_KEY=${{secrets.TEST_API_KEY}} npm run test
