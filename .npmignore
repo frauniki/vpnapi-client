@@ -5,4 +5,4 @@ vite.config.ts
 eslint.config.mjs
 tsconfig.json
 .prettierignore
-.prettierrc.json
+.prettierrc.mjs
