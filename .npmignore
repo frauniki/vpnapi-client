@@ -7,3 +7,4 @@ tsconfig.json
 renovate.json
 .prettierignore
 .prettierrc.mjs
+**/*.test.ts
