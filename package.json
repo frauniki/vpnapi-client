@@ -1,7 +1,7 @@
 {
   "name": "vpnapi-client",
-  "version": "0.1.1",
-  "description": "",
+  "version": "0.1.0",
+  "description": "A Node.js client for the VPNAPI.io.",
   "main": "dist/index.js",
   "scripts": {
     "example": "node-ts ./example/main.ts",
@@ -12,8 +12,8 @@
     "lint:fix": "eslint . --fix *.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "frauniki <frauniki@sinoa.jp> (https://github.com/frauniki)",
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.16.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.4.0",
