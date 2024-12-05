@@ -3,6 +3,7 @@
   "version": "0.1.2",
   "description": "A Node.js client for the VPNAPI.io.",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "example": "node-ts ./example/main.ts",
     "build": "tsc ",
@@ -11,7 +12,20 @@
     "lint": "eslint . *.ts",
     "lint:fix": "eslint . --fix *.ts"
   },
-  "keywords": [],
+  "keywords": [
+    "vpnapi",
+    "vpnapi.io",
+    "vpnapi-client",
+    "vpnapi-node"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frauniki/vpnapi-client.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frauniki/vpnapi-client/issues"
+  },
+  "homepage": "https://github.com/frauniki/vpnapi-client",
   "author": "frauniki <frauniki@sinoa.jp> (https://github.com/frauniki)",
   "license": "MIT",
   "devDependencies": {
