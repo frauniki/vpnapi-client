@@ -4,5 +4,6 @@ example/
 vite.config.ts
 eslint.config.mjs
 tsconfig.json
+renovate.json
 .prettierignore
 .prettierrc.mjs
