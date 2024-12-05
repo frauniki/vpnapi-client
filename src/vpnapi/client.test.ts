@@ -1,4 +1,5 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
+
 import { VpnApiClient } from "./client";
 
 const TEST_API_KEY = process.env.TEST_API_KEY;
@@ -40,7 +41,7 @@ describe("VpnApiClient", () => {
       for (const key of Object.keys(resp.network)) {
         expect(typeof (resp.network as any)[key]).toEqual("string");
       }
-    }
+    },
   );
 
   it.each(["2001:4860:4860::8888"])(
@@ -50,7 +51,7 @@ describe("VpnApiClient", () => {
       const resp = await client.getIpInfo(ip);
 
       expect(resp.ip).toEqual(ip);
-    }
+    },
   );
 
   it.each(["invalid", "8.8.8.8.8", "2001:4860:4860::88888"])(
@@ -58,9 +59,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is not a valid IP address.`
+        `${ip} is not a valid IP address.`,
       );
-    }
+    },
   );
 
   it.each(["10.0.0.1", "172.16.0.1", "192.168.0.1"])(
@@ -68,9 +69,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is a private IP address.`
+        `${ip} is a private IP address.`,
       );
-    }
+    },
   );
 
   it.each(["0.0.0.0", "::"])(
@@ -78,9 +79,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is a unspecified IP address.`
+        `${ip} is a unspecified IP address.`,
       );
-    }
+    },
   );
 
   it.each(["127.0.0.1", "::1"])(
@@ -88,9 +89,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is a loopback IP address.`
+        `${ip} is a loopback IP address.`,
       );
-    }
+    },
   );
 
   it.each(["169.254.0.1", "fe80::1"])(
@@ -98,9 +99,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is a link-local IP address.`
+        `${ip} is a link-local IP address.`,
       );
-    }
+    },
   );
 
   it.each(["224.0.0.1", "ff00::1"])(
@@ -108,9 +109,9 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
-        `${ip} is a multicast IP address.`
+        `${ip} is a multicast IP address.`,
       );
-    }
+    },
   );
 
   it.each([""])(
@@ -118,6 +119,13 @@ describe("VpnApiClient", () => {
     async (ip) => {
       const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).resolves.not.toThrow();
-    }
+    },
   );
+
+  it("should throw an error for invalid API key", async () => {
+    const client = new VpnApiClient("invalid");
+    await expect(client.getIpInfo("8.8.8.8")).rejects.toThrow(
+      "Request failed with status code 403",
+    );
+  });
 });

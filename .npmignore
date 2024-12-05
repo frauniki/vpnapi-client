@@ -1,6 +1,8 @@
+.github/
 src/
 example/
 vite.config.ts
 eslint.config.mjs
 tsconfig.json
+.prettierignore
 .prettierrc.json

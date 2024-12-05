@@ -1,6 +1,6 @@
 # vpnapi-client
 
-A Node.js client for the [VPN API](https://vpnapi.io/).
+A Node.js client for the [VPNAPI.io](https://vpnapi.io/).
 
 ## Installing
 
@@ -21,9 +21,12 @@ $ yarn add vpnapi-client
 ```javascript
 import { VpnApiClient } from "vpnapi-client";
 
+const key = "KEY";
 const client = new VpnApiClient(key);
 
 // Get IP information
-const resp = await client.getIpInfo("8.8.8.8");
-console.log(resp);
+(async () => {
+  const resp = await client.getIpInfo("8.8.8.8");
+  console.log(resp);
+})();
 ```

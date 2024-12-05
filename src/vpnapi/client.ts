@@ -1,7 +1,9 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, isAxiosError } from "axios";
 import applyCaseMiddleware from "axios-case-converter";
-import { VpnApiErrorResponse, VpnApiResponse } from "./type";
+import axiosRetry, { IAxiosRetryConfig } from "axios-retry";
+
 import { VpnApiError } from "./error";
+import { VpnApiErrorResponse, VpnApiResponse } from "./type";
 
 const DEFAULT_API_URL = "https://vpnapi.io/api";
 
@@ -10,7 +12,11 @@ export class VpnApiClient {
 
   constructor(
     key: string,
-    options: { apiUrl?: string; timeout?: number } = {
+    options: {
+      apiUrl?: string;
+      timeout?: number;
+      retryConfig?: IAxiosRetryConfig;
+    } = {
       apiUrl: DEFAULT_API_URL,
       timeout: 1000,
     },
@@ -22,12 +28,25 @@ export class VpnApiClient {
         timeout: options.timeout,
       }),
     );
+    axiosRetry(this.axios, options.retryConfig);
   }
 
   async getIpInfo(ip: string): Promise<VpnApiResponse> {
-    const { data } = await this.axios.get<VpnApiResponse | VpnApiErrorResponse>(
-      `/${ip}`,
-    );
+    let data: VpnApiResponse | VpnApiErrorResponse | undefined = undefined;
+
+    try {
+      ({ data } = await this.axios.get<VpnApiResponse | VpnApiErrorResponse>(
+        `/${ip}`,
+      ));
+    } catch (err) {
+      if (isAxiosError(err)) {
+        throw new VpnApiError(err.message, err);
+      }
+    }
+
+    if (!data) {
+      throw new VpnApiError("No response data");
+    }
     if ("message" in data) {
       throw new VpnApiError(data.message);
     }
