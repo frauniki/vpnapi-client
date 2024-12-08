@@ -1,6 +1,6 @@
 {
   "name": "vpnapi-client",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A Node.js client for the VPNAPI.io.",
   "main": "dist/cjs/index.js",
   "types": "dist/cjs/index.d.ts",
