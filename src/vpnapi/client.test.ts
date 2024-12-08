@@ -1,17 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 
 import { VpnApiClient } from "./client";
 
-const TEST_API_KEY = process.env.TEST_API_KEY;
-if (!TEST_API_KEY) {
-  throw new Error("TEST_API_KEY is required");
-}
+let client: VpnApiClient;
+
+beforeAll(() => {
+  const TEST_API_KEY = process.env.TEST_API_KEY;
+  if (!TEST_API_KEY) {
+    throw new Error("TEST_API_KEY is required");
+  }
+
+  client = new VpnApiClient(TEST_API_KEY);
+});
 
 describe("VpnApiClient", () => {
   it.each(["8.8.8.8", "1.1.1.1"])(
     "should get IPv4 address information (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       const resp = await client.getIpInfo(ip);
 
       expect(resp.ip).toEqual(ip);
@@ -47,7 +52,6 @@ describe("VpnApiClient", () => {
   it.each(["2001:4860:4860::8888"])(
     "should get IPv6 address information (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       const resp = await client.getIpInfo(ip);
 
       expect(resp.ip).toEqual(ip);
@@ -57,7 +61,6 @@ describe("VpnApiClient", () => {
   it.each(["invalid", "8.8.8.8.8", "2001:4860:4860::88888"])(
     "should throw an error for invalid IP address (%s",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is not a valid IP address.`,
       );
@@ -67,7 +70,6 @@ describe("VpnApiClient", () => {
   it.each(["10.0.0.1", "172.16.0.1", "192.168.0.1"])(
     "should throw an error for private IP address (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is a private IP address.`,
       );
@@ -77,7 +79,6 @@ describe("VpnApiClient", () => {
   it.each(["0.0.0.0", "::"])(
     "should throw an error for unspecified IP address (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is a unspecified IP address.`,
       );
@@ -87,7 +88,6 @@ describe("VpnApiClient", () => {
   it.each(["127.0.0.1", "::1"])(
     "should throw an error for loopback IP address (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is a loopback IP address.`,
       );
@@ -97,7 +97,6 @@ describe("VpnApiClient", () => {
   it.each(["169.254.0.1", "fe80::1"])(
     "should throw an error for link-local IP address (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is a link-local IP address.`,
       );
@@ -107,20 +106,15 @@ describe("VpnApiClient", () => {
   it.each(["224.0.0.1", "ff00::1"])(
     "should throw an error for multicast IP address (%s)",
     async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
       await expect(client.getIpInfo(ip)).rejects.toThrow(
         `${ip} is a multicast IP address.`,
       );
     },
   );
 
-  it.each([""])(
-    "should throw an error for empty IP address (current IP)",
-    async (ip) => {
-      const client = new VpnApiClient(TEST_API_KEY);
-      await expect(client.getIpInfo(ip)).resolves.not.toThrow();
-    },
-  );
+  it("should throw an error for empty IP address (current IP)", async () => {
+    await expect(client.getIpInfo("")).resolves.not.toThrow();
+  });
 
   it("should throw an error for invalid API key", async () => {
     const client = new VpnApiClient("invalid");
