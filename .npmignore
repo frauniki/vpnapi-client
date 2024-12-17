@@ -3,6 +3,8 @@ src/
 example/
 vite.config.ts
 eslint.config.mjs
+tsconfig.base.json
+tsconfig.cjs.json
 tsconfig.json
 renovate.json
 .prettierignore
