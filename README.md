@@ -30,3 +30,7 @@ const client = new VpnApiClient(key);
   console.log(resp);
 })();
 ```
+
+## License
+
+MIT
